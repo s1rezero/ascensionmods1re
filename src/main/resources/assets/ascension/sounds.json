@@ -1,0 +1,6 @@
+{
+  "intro_voice": {
+    "sounds": [ { "name": "ascension:intro_voice", "stream": false } ],
+    "subtitle": "subtitles.ascension.intro_voice"
+  }
+}
