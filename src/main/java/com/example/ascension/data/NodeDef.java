@@ -16,8 +16,8 @@ public record NodeDef(int id, Branch branch, int local, String name, Effect effe
         return milestone ? abilityDesc : effect.describe(value);
     }
 
-    /** Does unlocking this actually change anything in the current build? */
+    /** Kept for the tooltip; every orb is implemented now. */
     public boolean live() {
-        return effect.implemented();
+        return true;
     }
 }

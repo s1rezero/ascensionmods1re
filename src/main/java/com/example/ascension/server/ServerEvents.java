@@ -24,14 +24,23 @@ public final class ServerEvents {
     @SubscribeEvent
     public static void onLogin(PlayerEvent.PlayerLoggedInEvent event) {
         if (event.getEntity() instanceof ServerPlayer player) {
+            AbilityEffects.cleanupStaleFlight(player);
             ProgressService.applyStats(player);
             ProgressService.sync(player);
         }
     }
 
     @SubscribeEvent
+    public static void onLogout(PlayerEvent.PlayerLoggedOutEvent event) {
+        if (event.getEntity() instanceof ServerPlayer player) {
+            AbilityManager.endAll(player);
+        }
+    }
+
+    @SubscribeEvent
     public static void onRespawn(PlayerEvent.PlayerRespawnEvent event) {
         if (event.getEntity() instanceof ServerPlayer player) {
+            AbilityEffects.cleanupStaleFlight(player);
             ProgressService.applyStats(player);
             ProgressService.sync(player);
         }

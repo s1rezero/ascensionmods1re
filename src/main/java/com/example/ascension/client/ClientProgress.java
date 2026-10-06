@@ -14,14 +14,17 @@ public final class ClientProgress {
         return current;
     }
 
-    public static void set(long xp, long[] words) {
+    public static void set(long xp, long[] words, boolean introSeen, int[] slots) {
         PlayerProgress p = new PlayerProgress();
         p.totalXp = xp;
         p.unlocked = BitSet.valueOf(words);
+        p.introSeen = introSeen;
+        for (int i = 0; i < PlayerProgress.SLOTS && i < slots.length; i++) p.slots[i] = slots[i];
         current = p;
     }
 
     public static void clear() {
         current = new PlayerProgress();
+        ClientCooldowns.clear();
     }
 }

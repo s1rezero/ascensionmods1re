@@ -27,7 +27,9 @@ public final class ProgressService {
 
     public static void sync(ServerPlayer player) {
         PlayerProgress p = get(player);
-        PacketDistributor.sendToPlayer(player, new ProgressSyncPayload(p.totalXp, p.unlocked.toLongArray()));
+        p.validateSlots();
+        PacketDistributor.sendToPlayer(player,
+                new ProgressSyncPayload(p.totalXp, p.unlocked.toLongArray(), p.introSeen, p.slots.clone()));
     }
 
     /** Adds mod XP, tells the player when they earn a point, and syncs. */

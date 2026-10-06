@@ -15,7 +15,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 
-/** Testing helpers (operators only): /ascension addlevels 24, /ascension addxp 500, /ascension respec, /ascension reset */
+/** Testing helpers (operators only): addlevels, addxp, respec, reset, intro (replays the opening cinematic). */
 @EventBusSubscriber(modid = AscensionMod.MODID)
 public final class AscensionCommands {
     private AscensionCommands() {}
@@ -30,6 +30,7 @@ public final class AscensionCommands {
                 .then(Commands.literal("addxp")
                         .then(Commands.argument("amount", LongArgumentType.longArg(1))
                                 .executes(ctx -> addXp(ctx, LongArgumentType.getLong(ctx, "amount")))))
+                .then(Commands.literal("intro").executes(AscensionCommands::intro))
                 .then(Commands.literal("respec").executes(AscensionCommands::respec))
                 .then(Commands.literal("reset").executes(AscensionCommands::reset)));
     }
@@ -50,9 +51,19 @@ public final class AscensionCommands {
         return 1;
     }
 
+    private static int intro(CommandContext<CommandSourceStack> ctx) throws com.mojang.brigadier.exceptions.CommandSyntaxException {
+        ServerPlayer player = ctx.getSource().getPlayerOrException();
+        ProgressService.get(player).introSeen = false;
+        ProgressService.sync(player);
+        ctx.getSource().sendSuccess(() -> Component.literal("The opening cinematic will play the next time you open the tree"), false);
+        return 1;
+    }
+
     private static int respec(CommandContext<CommandSourceStack> ctx) throws com.mojang.brigadier.exceptions.CommandSyntaxException {
         ServerPlayer player = ctx.getSource().getPlayerOrException();
-        ProgressService.get(player).unlocked.clear();
+        PlayerProgress progress = ProgressService.get(player);
+        progress.unlocked.clear();
+        java.util.Arrays.fill(progress.slots, -1);
         ProgressService.applyStats(player);
         ProgressService.sync(player);
         ctx.getSource().sendSuccess(() -> Component.literal("All upgrades refunded"), false);
@@ -63,6 +74,7 @@ public final class AscensionCommands {
         ServerPlayer player = ctx.getSource().getPlayerOrException();
         PlayerProgress p = ProgressService.get(player);
         p.unlocked.clear();
+        java.util.Arrays.fill(p.slots, -1);
         p.totalXp = 0;
         ProgressService.applyStats(player);
         ProgressService.sync(player);

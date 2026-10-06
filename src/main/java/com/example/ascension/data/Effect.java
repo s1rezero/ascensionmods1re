@@ -9,8 +9,8 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 
 /**
- * What an upgrade does. Effects with an attribute are live in this build; the others (attribute == null) are
- * stored and shown but get their behaviour in later stages.
+ * What an upgrade does. Effects with an attribute are applied as vanilla attribute modifiers; the others (attribute == null) are
+ * implemented by the passive-effect and ability systems in the server package.
  */
 public enum Effect {
     // ---- live now (vanilla attributes)
@@ -59,9 +59,9 @@ public enum Effect {
         this.operation = operation;
     }
 
-    /** True if this effect already does something in the current build. */
+    /** Every effect does something now (attributes, or handled by the passive/ability systems). */
     public boolean implemented() {
-        return attribute != null;
+        return true;
     }
 
     public Holder<Attribute> attribute() {

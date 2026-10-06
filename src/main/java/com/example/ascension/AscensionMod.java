@@ -4,9 +4,14 @@ import java.util.function.Supplier;
 
 import com.example.ascension.data.PlayerProgress;
 import com.example.ascension.network.ClientHandlers;
+import com.example.ascension.network.CooldownPayload;
+import com.example.ascension.network.IntroSeenPayload;
 import com.example.ascension.network.ProgressSyncPayload;
 import com.example.ascension.network.ServerHandlers;
+import com.example.ascension.network.SetSlotPayload;
+import com.example.ascension.network.SortPayload;
 import com.example.ascension.network.UnlockNodePayload;
+import com.example.ascension.network.UseAbilityPayload;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
@@ -48,7 +53,12 @@ public class AscensionMod {
     private void registerPayloads(RegisterPayloadHandlersEvent event) {
         PayloadRegistrar registrar = event.registrar("1");
         registrar.playToClient(ProgressSyncPayload.TYPE, ProgressSyncPayload.STREAM_CODEC, ClientHandlers::onSync);
+        registrar.playToClient(CooldownPayload.TYPE, CooldownPayload.STREAM_CODEC, ClientHandlers::onCooldown);
         registrar.playToServer(UnlockNodePayload.TYPE, UnlockNodePayload.STREAM_CODEC, ServerHandlers::onUnlock);
+        registrar.playToServer(SetSlotPayload.TYPE, SetSlotPayload.STREAM_CODEC, ServerHandlers::onSetSlot);
+        registrar.playToServer(UseAbilityPayload.TYPE, UseAbilityPayload.STREAM_CODEC, ServerHandlers::onUseAbility);
+        registrar.playToServer(SortPayload.TYPE, SortPayload.STREAM_CODEC, ServerHandlers::onSort);
+        registrar.playToServer(IntroSeenPayload.TYPE, IntroSeenPayload.STREAM_CODEC, ServerHandlers::onIntroSeen);
     }
 
     public static ResourceLocation id(String path) {
